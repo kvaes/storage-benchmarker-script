@@ -9,7 +9,7 @@
 
     [parameter(mandatory=$False,HelpMessage='Test file size in GB')] 
     [ValidateSet('1','5','10','50','100','500','1000')] 
-    $TestFileSizeInGB = 100,
+    $TestFileSizeInGB = 10,
 
     [parameter(mandatory=$False,HelpMessage='Path to test folder')] 
     [ValidateLength(3,254)] 
@@ -53,18 +53,18 @@
 
     [parameter(mandatory=$False,HelpMessage='Want the link in your inbox?')] 
     [ValidateLength(1,254)] 
-    $Email='False'
+    $Email='storage@kvaes.be'
 )
 
 # Versioning
-$Source = "https://bitbucket.org/kvaes/storage-performance-benchmarker"
-$Version = 0.4
+$Source = "https://github.com/kvaes/storage-benchmarker-script"
+$Version = 2.1
 # PreFlight Variables
 $elapsed = [System.Diagnostics.Stopwatch]::StartNew()
 $TestFileLocation = "$TestFilepath\$TestFileName"
 $Folder = New-Item -Path $TestLogDirectory -ItemType Directory -Force -ErrorAction SilentlyContinue
 $unixdate = (Get-Date -UFormat %s) -Replace("[,\.]\d*", "")
-$endPoint = "http://storage.kvaes.be:80/api/send"
+$endPoint = "https://labo.kvaes.be/api/send/"
 
 $systemname = (Get-WmiObject Win32_OperatingSystem).CSName
 $operatingsystem = (Get-WmiObject Win32_OperatingSystem).Version
@@ -114,7 +114,7 @@ Function Remove-TestFile{
     }
 }
 
-Function StoragePerformanceBenchmark($TestName, $action, $Type,$KBytes,$oStart, $oStop, $threads){
+Function StoragePerformanceBenchmarkDisk($TestName, $action, $Type,$KBytes,$oStart, $oStop, $threads){
     New-TestFile
     $request = ""
     Write-Host "*** Initialize for StoragePerformanceBenchmark $TestName"
@@ -271,29 +271,22 @@ function SendData($reqBody) {
       <ApiKey>$TestApiKey</ApiKey>
       <TestScenario>$TestScenario</TestScenario>
       <Date>$unixdate</Date>
-      <Private>$prive</Private>
+      <Private>$private</Private>
       <Email>$email</Email>
     </system>
-
 "@
         $reqFooter = @"
-
 </document>
 "@
-        $request = $reqHeader + $reqBody + $reqFooter
-        $wr = [System.Net.HttpWebRequest]::Create($endPoint)
-        $wr.Method= 'POST';
-        $wr.ContentType="application/xml";
-        $Body = [byte[]][char[]]$request;
-        $wr.Timeout = 10000;
-        $Stream = $wr.GetRequestStream();
-        $Stream.Write($Body, 0, $Body.Length);
-        $Stream.Flush();
-        $Stream.Close();
-        $resp = $wr.GetResponse().GetResponseStream()
-        $sr = New-Object System.IO.StreamReader($resp) 
-        $respTxt = $sr.ReadToEnd()
-        Write-Host "* $($respTxt)";
+        $request = $reqHeader + $reqBody + $reqFooter	
+		
+		[System.Net.ServicePointManager]::ServerCertificateValidationCallback = { $True }
+		$AllProtocols = [System.Net.SecurityProtocolType]'Ssl3,Tls,Tls11,Tls12'
+		[System.Net.ServicePointManager]::SecurityProtocol = $AllProtocols
+
+		$out = Invoke-WebRequest $endPoint -Method post -ContentType 'text/xml' -Body $request
+        		
+		Write-Host "* $out";	
     }
     catch
     {
