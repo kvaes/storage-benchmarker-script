@@ -58,13 +58,13 @@
 
 # Versioning
 $Source = "https://github.com/kvaes/storage-benchmarker-script"
-$Version = 2.1
+$Version = 2.2
 # PreFlight Variables
 $elapsed = [System.Diagnostics.Stopwatch]::StartNew()
 $TestFileLocation = "$TestFilepath\$TestFileName"
 $Folder = New-Item -Path $TestLogDirectory -ItemType Directory -Force -ErrorAction SilentlyContinue
 $unixdate = (Get-Date -UFormat %s) -Replace("[,\.]\d*", "")
-$endPoint = "https://labo.kvaes.be/api/send/"
+$endPoint = "https://storage.kvaes.be/api/send/"
 
 $systemname = (Get-WmiObject Win32_OperatingSystem).CSName
 $operatingsystem = (Get-WmiObject Win32_OperatingSystem).Version
