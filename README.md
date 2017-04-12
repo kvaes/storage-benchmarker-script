@@ -7,6 +7,11 @@ Origin
 ======
 * http://storage.kvaes.be/
 
+Requirements
+============
+Powershell version 4 or upwards need to be installed.
+If you want to run this on (for instance) Windows 2008, please check the (following documentation)[https://social.technet.microsoft.com/wiki/contents/articles/20623.step-by-step-upgrading-the-powershell-version-4-on-2008-r2.aspx]
+
 Parameters Information
 ======================
 
