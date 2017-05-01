@@ -17,7 +17,7 @@ Parameters Information
 
 Information | Parameter | Default Value
 ----------- | --------- | -------------
-In a rush? One run per test | -QuickTest | True
+In a rush? One run per test | -QuickTest | False
 What flavor do you want? | -TestMethod | DISKSPD
 Name of test file | -TestFileName | StoragePerformance.test
 Test file size in GB | -TestFileSizeInGB  | 1
