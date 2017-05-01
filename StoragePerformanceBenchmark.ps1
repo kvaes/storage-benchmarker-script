@@ -45,7 +45,7 @@
 
     [parameter(mandatory=$False,HelpMessage='In a rush?')] 
     [ValidateSet('True','False')] 
-    $QuickTest='True',
+    $QuickTest='False',
 
     [parameter(mandatory=$False,HelpMessage='Results only accesible via direct link')] 
     [ValidateSet('True','False')] 
